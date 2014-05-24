@@ -17,8 +17,13 @@ class UsersController < ApplicationController
   end
   
   def destroy
-    User.find(params[:id]).destroy
-    flash[:success] = "User deleted."
+    user_to_delete = User.find(params[:id])
+    if current_user != user_to_delete  
+      user_to_delete.destroy
+      flash[:success] = "User deleted."
+    else
+      flash[:error] = "You cannot delete yourself!"
+    end
     redirect_to users_url
   end
   
