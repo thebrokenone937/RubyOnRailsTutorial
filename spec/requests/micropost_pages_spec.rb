@@ -27,8 +27,25 @@ describe "Micropost pages" do
       before { fill_in 'micropost_content', with: "Lorem ipsum" }
       it "should create a micropost" do
         expect { click_button "Post" }.to change(Micropost, :count).by(1)
+        page.should have_content("1 micropost")
+        
+        page.fill_in 'micropost_content', with: "Lorem ipsum" 
+        expect { click_button "Post" }.to change(Micropost, :count).by(1)
+        page.should have_content("2 microposts")  
+      end
+      
+      it "should paginate the posts" do
+        
+        40.times do
+          page.fill_in 'micropost_content', with: "Lorem ipsum" 
+          expect { click_button "Post" }.to change(Micropost, :count).by(1)
+        end
+        
+        page.should have_content("1 2 Next")
       end
     end
+    
+    
   end
   
   describe "micropost destruction" do

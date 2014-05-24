@@ -61,10 +61,14 @@ describe "User pages" do
   
   describe "profile page" do
     let(:user) { FactoryGirl.create(:user) }
+    let(:admin) { FactoryGirl.create(:admin) }  
     let!(:m1) { FactoryGirl.create(:micropost, user: user, content: "Foo") }
     let!(:m2) { FactoryGirl.create(:micropost, user: user, content: "Bar") }
     
-    before { visit user_path(user) }
+    before do 
+      sign_in admin
+      visit user_path(user)
+    end
     
     it { should have_content(user.name) }
     it { should have_title(user.name) }
@@ -72,7 +76,9 @@ describe "User pages" do
     describe "microposts" do
       it { should have_content(m1.content) }
       it { should have_content(m2.content) }
+      it { should_not have_content("delete") }  
       it { should have_content(user.microposts.count) }
+              
     end
   end
   
